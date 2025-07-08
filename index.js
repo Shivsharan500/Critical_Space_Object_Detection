@@ -68,35 +68,35 @@ app.post("/upload", async (req, res) => {
 app.post("/predict", (req, res) => {
   console.log("🧠 /predict endpoint hit");
 
-  exec("which python3", (err, stdout, stderr) => {
-    console.log("🔍 Checking python3 path...");
+  exec("which python", (err, stdout, stderr) => {
+    console.log("🔍 Checking python path...");
     if (err) {
-      console.error("❌ python3 not found:", err);
-      return res.status(500).json({ success: false, message: "python3 missing" });
+      console.error("❌ python not found:", err);
+      return res.status(500).json({ success: false, message: "python missing" });
     }
 
-    console.log("✅ python3 found at:", stdout.trim());
+    console.log("✅ python found at:", stdout.trim());
 
-    exec("/opt/render/project/src/.venv/bin/python3 drive_yolo_predict.py", (error, stdout, stderr) => {
-  console.log("📦 exec complete");
+    exec("python drive_yolo_predict.py", (error, stdout2, stderr2) => {
+      console.log("📦 exec complete");
 
-  if (error) {
-    console.error("❌ Python script failed:", error);
-    console.error("stderr:", stderr);
-    return res.status(500).json({ success: false, message: "Prediction failed" });
-  }
+      if (error) {
+        console.error("❌ Python script failed:", error);
+        console.error("stderr:", stderr2);
+        return res.status(500).json({ success: false, message: "Prediction failed" });
+      }
 
-  console.log("📤 STDOUT:", stdout);
+      console.log("📤 STDOUT:", stdout2);
 
-  try {
-    const base64 = fs.readFileSync("result_base64.txt", "utf8");
-    fs.unlinkSync("result_base64.txt");
-    res.json({ success: true, predictedImage: base64 });
-  } catch (e) {
-    console.error("📛 Could not read result_base64.txt:", e);
-    res.status(500).json({ success: false, message: "No result generated" });
-  }
-});
+      try {
+        const base64 = fs.readFileSync("result_base64.txt", "utf8");
+        fs.unlinkSync("result_base64.txt");
+        res.json({ success: true, predictedImage: base64 });
+      } catch (e) {
+        console.error("📛 Could not read result_base64.txt:", e);
+        res.status(500).json({ success: false, message: "No result generated" });
+      }
+    });
   });
 });
 
