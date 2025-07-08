@@ -1,6 +1,9 @@
 const express = require("express");
 const app = express();
-require("dotenv").config();
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+
 const port = process.env.PORT || 3000;
 const path = require("path");
 const fs = require("fs");
@@ -91,7 +94,7 @@ app.post("/predict", (req, res) => {
 
 
 
-app.listen(port,() => {
+app.listen(port,'0.0.0.0',() => {
     console.log(`Server Listening to port:${port}`);
 });
 
