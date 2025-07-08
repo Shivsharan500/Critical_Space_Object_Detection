@@ -58,6 +58,8 @@ app.post("/upload", async (req, res) => {
   }
 });
 
+
+
 app.post("/predict", (req, res) => {
   console.log("🧠 /predict endpoint hit");
 
@@ -65,24 +67,24 @@ app.post("/predict", (req, res) => {
     console.log("📦 exec complete");
 
     if (error) {
-      console.error("❌ Prediction error:", error);
+      console.error("❌ Exec error:", error);
+      console.error("⚠️ stderr:", stderr);
       return res.status(500).json({ success: false, message: "Python crashed" });
     }
 
-    console.log("📤 stdout:", stdout);
-    console.log("⚠️ stderr:", stderr);
+    console.log("📤 STDOUT:", stdout);
 
     try {
-      const base64Result = fs.readFileSync("result_base64.txt", "utf8");
+      const base64 = fs.readFileSync("result_base64.txt", "utf8");
       fs.unlinkSync("result_base64.txt");
-
-      res.json({ success: true, predictedImage: base64Result });
-    } catch (readErr) {
-      console.error("📛 Could not read result_base64.txt:", readErr);
-      res.status(500).json({ success: false, message: "Result not found" });
+      res.json({ success: true, predictedImage: base64 });
+    } catch (e) {
+      console.error("📛 Could not read result_base64.txt:", e);
+      res.status(500).json({ success: false, message: "Prediction file missing" });
     }
   });
 });
+
 
 
 

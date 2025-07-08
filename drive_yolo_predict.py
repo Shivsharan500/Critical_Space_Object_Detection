@@ -138,7 +138,10 @@ def main():
 
 if __name__ == "__main__":
     try:
+        print("📍 Python script started")
         main()
+        print("✅ Python: Finished")
     except Exception as e:
-        print(f"Error occurred: {e}")
+        print("❌ Python crashed:", str(e))
+
 
