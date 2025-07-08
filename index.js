@@ -78,13 +78,8 @@ app.post("/predict", (req, res) => {
     console.log("✅ python found at:", stdout.trim());
     console.log("❓ Script exists:", fs.existsSync("drive_yolo_predict.py"));
 
-    exec("/opt/render/project/src/.venv/bin/python -c \"print('✅ Hello from Python')\"", (err, stdout, stderr) => {
-  console.log("PYTHON TEST OUTPUT:", stdout);
-  console.error("PYTHON TEST ERROR:", stderr, err);
-});
 
-
-    exec("/opt/render/project/src/.venv/bin/python drive_yolo_predict.py", (error, stdout2, stderr2) => {
+    exec("python drive_yolo_predict.py", (error, stdout2, stderr2) => {
       console.log("📦 exec complete");
 
       if (error) {
