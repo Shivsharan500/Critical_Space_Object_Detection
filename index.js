@@ -11,7 +11,7 @@ const { exec } = require("child_process");
 
 
 
-app.set("view engine","views");
+app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"views"));
 app.use(bodyParser.json({ limit: "10mb" }));
 app.use(express.json());
@@ -19,7 +19,7 @@ app.use(express.json());
 
 
 const auth = new google.auth.GoogleAuth({
-  keyFile: "credentials.json",
+  keyFile: process.env.GOOGLE_APPLICATION_CREDENTIALS || "credentials.json",
   scopes: ["https://www.googleapis.com/auth/drive.file"],
 });
 const drive = google.drive({ version: "v3", auth });
