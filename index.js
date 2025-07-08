@@ -61,7 +61,7 @@ app.post("/upload", async (req, res) => {
 app.post("/predict", (req, res) => {
   console.log("🧠 /predict endpoint hit");
 
-  exec("python drive_yolo_predict.py", (error, stdout, stderr) => {
+  exec("python3 drive_yolo_predict.py", (error, stdout, stderr) => {
     console.log("📦 exec complete");
 
     if (error) {

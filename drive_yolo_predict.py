@@ -89,6 +89,8 @@ def download_model_if_needed(drive_service, file_id, local_path="best.pt"):
 
 
 def main():
+    print("📍 Python script started")
+
     file = get_single_drive_image(INPUT_FOLDER_ID)
     if not file:
         print("No image found in input folder.")
