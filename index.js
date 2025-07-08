@@ -59,20 +59,32 @@ app.post("/upload", async (req, res) => {
 });
 
 app.post("/predict", (req, res) => {
+  console.log("🧠 /predict endpoint hit");
+
   exec("python drive_yolo_predict.py", (error, stdout, stderr) => {
+    console.log("📦 exec complete");
+
     if (error) {
-      console.error("Prediction error:", error);
-      return res.status(500).json({ success: false });
+      console.error("❌ Prediction error:", error);
+      return res.status(500).json({ success: false, message: "Python crashed" });
     }
 
-    const base64Result = fs.readFileSync("result_base64.txt", "utf8");
+    console.log("📤 stdout:", stdout);
+    console.log("⚠️ stderr:", stderr);
 
-    // Cleanup
-    fs.unlinkSync("result_base64.txt");
+    try {
+      const base64Result = fs.readFileSync("result_base64.txt", "utf8");
+      fs.unlinkSync("result_base64.txt");
 
-    res.json({ success: true, predictedImage: base64Result });
+      res.json({ success: true, predictedImage: base64Result });
+    } catch (readErr) {
+      console.error("📛 Could not read result_base64.txt:", readErr);
+      res.status(500).json({ success: false, message: "Result not found" });
+    }
   });
 });
+
+
 
 
 

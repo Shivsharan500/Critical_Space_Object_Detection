@@ -131,7 +131,8 @@ def main():
     input_path.unlink()
     output_path.unlink()
 
-    print("✅ Done.")
+    print("✅ Python: Prediction complete, result_base64.txt should be written.")
+
 
 if __name__ == "__main__":
     try:
