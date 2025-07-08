@@ -63,28 +63,40 @@ app.post("/upload", async (req, res) => {
 
 
 
+const { exec } = require("child_process");
+
 app.post("/predict", (req, res) => {
   console.log("🧠 /predict endpoint hit");
 
-  exec("python3 drive_yolo_predict.py", (error, stdout, stderr) => {
-    console.log("📦 exec complete");
-
-    if (error) {
-      console.error("❌ Exec error:", error);
-      console.error("⚠️ stderr:", stderr);
-      return res.status(500).json({ success: false, message: "Python crashed" });
+  exec("which python3", (err, stdout, stderr) => {
+    console.log("🔍 Checking python3 path...");
+    if (err) {
+      console.error("❌ python3 not found:", err);
+      return res.status(500).json({ success: false, message: "python3 missing" });
     }
 
-    console.log("📤 STDOUT:", stdout);
+    console.log("✅ python3 found at:", stdout.trim());
 
-    try {
-      const base64 = fs.readFileSync("result_base64.txt", "utf8");
-      fs.unlinkSync("result_base64.txt");
-      res.json({ success: true, predictedImage: base64 });
-    } catch (e) {
-      console.error("📛 Could not read result_base64.txt:", e);
-      res.status(500).json({ success: false, message: "Prediction file missing" });
-    }
+    exec("python3 drive_yolo_predict.py", (error, stdout2, stderr2) => {
+      console.log("📦 exec complete");
+
+      if (error) {
+        console.error("❌ Python script failed:", error);
+        console.error("stderr:", stderr2);
+        return res.status(500).json({ success: false, message: "Prediction failed" });
+      }
+
+      console.log("📤 STDOUT:", stdout2);
+
+      try {
+        const base64 = fs.readFileSync("result_base64.txt", "utf8");
+        fs.unlinkSync("result_base64.txt");
+        res.json({ success: true, predictedImage: base64 });
+      } catch (e) {
+        console.error("📛 Could not read result_base64.txt:", e);
+        res.status(500).json({ success: false, message: "No result generated" });
+      }
+    });
   });
 });
 
