@@ -63,7 +63,7 @@ app.post("/upload", async (req, res) => {
 
 
 
-const { exec } = require("child_process");
+
 
 app.post("/predict", (req, res) => {
   console.log("🧠 /predict endpoint hit");
